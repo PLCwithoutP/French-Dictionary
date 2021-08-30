@@ -1,0 +1,32 @@
+import sqlite3 as sql, os
+
+dosya = "sozluk_deneme1.sqlite"
+dosya_mevcut = os.path.exists(dosya)
+
+vt = sql.connect(dosya)
+im = vt.cursor()
+
+table = """CREATE TABLE IF NOT EXISTS sozluk
+(fransizca, tur, turkce)"""
+
+ex = 'c'
+
+im.execute(table)
+
+if not dosya_mevcut:
+    im.execute("""INSERT INTO sozluk VALUES
+    ("bonjour", "ad", "günaydın")""")
+    vt.commit()
+
+im.execute("""SELECT * FROM sozluk""")
+
+while ex == 'c':
+    fran = input("Kelimenin Fransızcasını giriniz:\n")
+    cins = input("Kelimenin türünü giriniz:\n")
+    tur = input("Kelimenin Türkçesini giriniz: \n")
+    data = (fran, cins, tur)
+    im.execute("""INSERT INTO sozluk VALUES (?,?,?)""", data)
+    ex = input("Devam etmek için 'c' tuşuna, çıkmak için herhangi bir tuşa basınız.")
+    vt.commit()
+
+vt.close()
